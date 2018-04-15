@@ -1,0 +1,57 @@
+function [ x, y, z ] = ContourCalc( X, Y, alpha )
+
+    size = 10;
+
+    Xc = linspace(-150, 150, size);
+    Yc = linspace(-150, 150, size);
+    
+    [Xc, Yc] = meshgrid(Xc, Yc);
+    
+    p = zeros(size,size,2);
+    disp(p);
+    disp(Xc);
+    p(:,:,1) = Xc;
+    p(:,:,2) = Yc;
+    
+    o = [2,size];
+    
+    for h = 1:size
+    
+        for k = 1:size
+        
+            w0 = p(h, k, 1);
+            w1 = p(h ,k, 2);
+            
+        cw0Sum = 0;
+    cw1Sum = 0;
+    for i = 1:length(X)
+         cw0Sum = cw0Sum + (Y(i) - (w0 + X(i)*w1));
+         cw1Sum = cw1Sum + (Y(i) - (w0 + X(i)*w1)) * X(i);
+    end
+       
+    cw0 = w0 + (alpha * cw0Sum);
+    cw1 = w1 + (alpha * cw1Sum);
+       
+    prev_error = sse(X, Y, w0, w1);
+       
+    w0 = cw0;
+    w1 = cw1;
+       
+    curr_error = sse(X, Y, w0, w1);
+    error = prev_error - curr_error;
+             o(h,k) = error;
+        end
+        
+    end
+  
+    
+    disp(o);
+
+    x = p(:,:,1);
+    y = p(:,:,2);
+    z = o;
+    
+
+
+end
+
